@@ -69,7 +69,106 @@ func SendMessage(text string, chat_id int) {
 	})
 }
 
+// func OnuMessageComposer(data snmp.Onu, chat_id int) {
+// 	base_message := `
+// *Nama*: *%s*
+// *Status*: %s
+// *Mac*: %s
+// *Distance*: %s m
+// *Rx*: %s dBm
+// *Tx*: %s dBm
+// -------------------------------
+
+// `
+
+// 	result := []string{}
+
+// 	for i := range data.Name {
+// 		status := data.Status[i]
+// 		if status == "up" {
+// 			status = "✅ Up"
+// 		} else {
+// 			status = "❌ Down"
+// 		}
+
+// 		result = append(result, fmt.Sprintf(
+// 			base_message,
+// 			data.Name[i],
+// 			status,
+// 			strings.ToUpper(data.Mac[i]),
+// 			data.Distance[i],
+// 			data.Rx[i],
+// 			data.Tx[i],
+// 		))
+// 	}
+
+// 	SendMessage(strings.Join(result, ""), chat_id)
+// }
+
+// func OnuMessageList(data snmp.Onu, chat_id int) {
+// 	base_message := `
+// *Nama*: *%s*
+// *Status*: %s
+// *Mac*: %s
+
+// `
+
+// 	overview_message := `
+// -------------------------------
+// 👤 Total: %d
+// ✅ Online: %d
+// ❌ Offline: %d
+// `
+
+// 	online := 0
+// 	offline := 0
+
+// 	result := []string{}
+
+// 	for i := range data.Name {
+// 		status := data.Status[i]
+// 		if status == "up" {
+// 			status = "✅ Up"
+// 			online++
+// 		} else {
+// 			status = "❌ Down"
+// 			offline++
+// 		}
+
+// 		result = append(result, fmt.Sprintf(
+// 			base_message,
+// 			data.Name[i],
+// 			status,
+// 			strings.ToUpper(data.Mac[i]),
+// 		))
+// 	}
+
+// 	result = append(result, fmt.Sprintf(overview_message, (online+offline), online, offline))
+
+// 	SendMessage(strings.Join(result, ""), chat_id)
+// }
+
 func OnuMessageComposer(data snmp.Onu, chat_id int) {
+	// Validasi panjang semua slice
+	lengths := map[string]int{
+		"Name":     len(data.Name),
+		"Status":   len(data.Status),
+		"Mac":      len(data.Mac),
+		"Distance": len(data.Distance),
+		"Rx":       len(data.Rx),
+		"Tx":       len(data.Tx),
+	}
+
+	// Cek apakah semua panjang sama
+	expectedLen := len(data.Name)
+	for field, length := range lengths {
+		if length != expectedLen {
+			log.Fatalf("Array length mismatch! Name=%d, Status=%d, Mac=%d, Distance=%d, Rx=%d, Tx=%d. Field '%s' has different length",
+				lengths["Name"], lengths["Status"], lengths["Mac"],
+				lengths["Distance"], lengths["Rx"], lengths["Tx"], field)
+		}
+	}
+
 	base_message := `
 *Nama*: *%s*
 *Status*: %s
@@ -78,11 +177,8 @@ func OnuMessageComposer(data snmp.Onu, chat_id int) {
 *Rx*: %s dBm
 *Tx*: %s dBm
 -------------------------------
-
 `
-
 	result := []string{}
-
 	for i := range data.Name {
 		status := data.Status[i]
 		if status == "up" {
@@ -90,7 +186,6 @@ func OnuMessageComposer(data snmp.Onu, chat_id int) {
 		} else {
 			status = "❌ Down"
 		}
-
 		result = append(result, fmt.Sprintf(
 			base_message,
 			data.Name[i],
@@ -101,30 +196,40 @@ func OnuMessageComposer(data snmp.Onu, chat_id int) {
 			data.Tx[i],
 		))
 	}
-
 	SendMessage(strings.Join(result, ""), chat_id)
 }
 
 func OnuMessageList(data snmp.Onu, chat_id int) {
+	// Validasi panjang semua slice
+	lengths := map[string]int{
+		"Name":   len(data.Name),
+		"Status": len(data.Status),
+		"Mac":    len(data.Mac),
+	}
+
+	// Cek apakah semua panjang sama
+	expectedLen := len(data.Name)
+	for field, length := range lengths {
+		if length != expectedLen {
+			log.Fatalf("Array length mismatch! Name=%d, Status=%d, Mac=%d. Field '%s' has different length",
+				lengths["Name"], lengths["Status"], lengths["Mac"], field)
+		}
+	}
+
 	base_message := `
 *Nama*: *%s*
 *Status*: %s
 *Mac*: %s
-
 `
-
 	overview_message := `
 -------------------------------
 👤 Total: %d
 ✅ Online: %d
 ❌ Offline: %d
 `
-
 	online := 0
 	offline := 0
-
 	result := []string{}
-
 	for i := range data.Name {
 		status := data.Status[i]
 		if status == "up" {
@@ -134,7 +239,6 @@ func OnuMessageList(data snmp.Onu, chat_id int) {
 			status = "❌ Down"
 			offline++
 		}
-
 		result = append(result, fmt.Sprintf(
 			base_message,
 			data.Name[i],
@@ -142,9 +246,7 @@ func OnuMessageList(data snmp.Onu, chat_id int) {
 			strings.ToUpper(data.Mac[i]),
 		))
 	}
-
 	result = append(result, fmt.Sprintf(overview_message, (online+offline), online, offline))
-
 	SendMessage(strings.Join(result, ""), chat_id)
 }
 

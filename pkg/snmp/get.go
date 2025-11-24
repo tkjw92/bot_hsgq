@@ -61,6 +61,11 @@ func getOnuName(c *SNMPClient, indexes []string) (onu []string) {
 	}
 
 	for _, res := range result.Variables {
+		if res.Type == gosnmp.NoSuchInstance {
+			onu = append(onu, "-")
+			continue
+		}
+
 		if res.Type == gosnmp.OctetString {
 			val := res.Value.([]byte)
 			onu = append(onu, string(val))
@@ -83,6 +88,11 @@ func getOnuMac(c *SNMPClient, indexes []string) (onu []string) {
 	}
 
 	for _, res := range result.Variables {
+		if res.Type == gosnmp.NoSuchInstance {
+			onu = append(onu, "-")
+			continue
+		}
+
 		if res.Type == gosnmp.OctetString {
 			val := res.Value.([]byte)
 			var mac []string
@@ -109,6 +119,11 @@ func getOnuStatus(c *SNMPClient, indexes []string) (onu []string) {
 	}
 
 	for _, res := range result.Variables {
+		if res.Type == gosnmp.NoSuchInstance {
+			onu = append(onu, "-")
+			continue
+		}
+
 		if res.Type == gosnmp.Integer {
 			val := res.Value.(int)
 			if val == 1 {
@@ -136,6 +151,11 @@ func getOnuOptical(c *SNMPClient, power_dir string, indexes []string) (onu []str
 	}
 
 	for _, res := range result.Variables {
+		if res.Type == gosnmp.NoSuchInstance {
+			onu = append(onu, "-")
+			continue
+		}
+
 		if res.Type == gosnmp.Integer {
 			val_int := res.Value.(int)
 			val_float := float64(val_int) * 0.01
@@ -161,6 +181,11 @@ func getOnuDistance(c *SNMPClient, indexes []string) (onu []string) {
 	}
 
 	for _, res := range result.Variables {
+		if res.Type == gosnmp.NoSuchInstance {
+			onu = append(onu, "-")
+			continue
+		}
+
 		if res.Type == gosnmp.Integer {
 			val := res.Value.(int)
 			onu = append(onu, fmt.Sprintf("%d", val))
