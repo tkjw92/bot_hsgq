@@ -4,7 +4,7 @@ RUN mkdir /src
 
 WORKDIR /src
 
-COPY ./pkg .
+COPY ./pkg pkg
 COPY ./go.mod ./go.sum .
 COPY ./main.go .
 
