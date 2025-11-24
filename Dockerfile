@@ -9,7 +9,7 @@ COPY ./go.mod ./go.sum .
 COPY ./main.go .
 
 RUN go mod download
-RUN go build -o bot_hsgq
+RUN go build -o bot_hsgq main.go
 
 FROM alpine:3.22
 
