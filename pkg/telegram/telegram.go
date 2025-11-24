@@ -142,6 +142,7 @@ func OnuMessageComposer(data snmp.Onu, chat_id int) {
 		"Distance": len(data.Distance),
 		"Rx":       len(data.Rx),
 		"Tx":       len(data.Tx),
+		"Vendor":   len(data.Vendor),
 	}
 
 	// Cek apakah semua panjang sama
@@ -150,7 +151,7 @@ func OnuMessageComposer(data snmp.Onu, chat_id int) {
 		if length != expectedLen {
 			log.Fatalf("Array length mismatch! Name=%d, Status=%d, Mac=%d, Distance=%d, Rx=%d, Tx=%d. Field '%s' has different length",
 				lengths["Name"], lengths["Status"], lengths["Mac"],
-				lengths["Distance"], lengths["Rx"], lengths["Tx"], field)
+				lengths["Distance"], lengths["Rx"], lengths["Tx"], lengths["Vendor"], field)
 		}
 	}
 
@@ -158,6 +159,7 @@ func OnuMessageComposer(data snmp.Onu, chat_id int) {
 *Nama*: *%s*
 *Status*: %s
 *Mac*: %s
+*ONU Vendor*: %s
 *Distance*: %s m
 *Rx*: %s dBm
 *Tx*: %s dBm
@@ -176,6 +178,7 @@ func OnuMessageComposer(data snmp.Onu, chat_id int) {
 			data.Name[i],
 			status,
 			strings.ToUpper(data.Mac[i]),
+			data.Vendor[i],
 			data.Distance[i],
 			data.Rx[i],
 			data.Tx[i],

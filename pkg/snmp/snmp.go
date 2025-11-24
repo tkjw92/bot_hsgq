@@ -15,6 +15,7 @@ type Onu struct {
 	Distance []string
 	Rx       []string
 	Tx       []string
+	Vendor   []string
 }
 
 const (

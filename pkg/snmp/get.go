@@ -16,6 +16,7 @@ func getAllOnu(c *SNMPClient) Onu {
 		Name:     getOnuName(c, indexes),
 		Mac:      getOnuMac(c, indexes),
 		Distance: getOnuDistance(c, indexes),
+		Vendor:   getOnuVendor(c, indexes),
 		Rx:       getOnuOptical(c, RxDir, indexes),
 		Tx:       getOnuOptical(c, TxDir, indexes),
 	}
@@ -27,6 +28,7 @@ func getOnu(c *SNMPClient, indexes []string) Onu {
 		Name:     getOnuName(c, indexes),
 		Mac:      getOnuMac(c, indexes),
 		Distance: getOnuDistance(c, indexes),
+		Vendor:   getOnuVendor(c, indexes),
 		Rx:       getOnuOptical(c, RxDir, indexes),
 		Tx:       getOnuOptical(c, TxDir, indexes),
 	}
@@ -189,6 +191,33 @@ func getOnuDistance(c *SNMPClient, indexes []string) (onu []string) {
 		if res.Type == gosnmp.Integer {
 			val := res.Value.(int)
 			onu = append(onu, fmt.Sprintf("%d", val))
+		}
+	}
+
+	return
+}
+
+func getOnuVendor(c *SNMPClient, indexes []string) (onu []string) {
+	oids := []string{}
+
+	for _, idx := range indexes {
+		oids = append(oids, "1.3.6.1.4.1.50224.3.3.2.1.25."+idx)
+	}
+
+	result, err := c.conn.Get(oids)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, res := range result.Variables {
+		if res.Type == gosnmp.NoSuchInstance {
+			onu = append(onu, "-")
+			continue
+		}
+
+		if res.Type == gosnmp.OctetString {
+			val := res.Value.([]byte)
+			onu = append(onu, string(val))
 		}
 	}
 
