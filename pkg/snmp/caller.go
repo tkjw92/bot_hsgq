@@ -14,6 +14,7 @@ func NewSNMPClient(target, community string) *SNMPClient {
 		Version:   gosnmp.Version2c,
 		Timeout:   gosnmp.Default.Timeout,
 		Retries:   gosnmp.Default.Retries,
+		MaxOids:   200,
 	}
 
 	if err := conn.Connect(); err != nil {
