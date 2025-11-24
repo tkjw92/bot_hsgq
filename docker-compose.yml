@@ -1,3 +1,4 @@
 service:
   bot:
     build: .
+    restart: unless-stopped
