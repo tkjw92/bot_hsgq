@@ -2,3 +2,6 @@ services:
   bot:
     build: .
     restart: unless-stopped
+    volumes:
+      ./.env:/app/.env
+      ./operators:/app/operators
