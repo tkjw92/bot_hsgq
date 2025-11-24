@@ -62,13 +62,78 @@ func Init(webhook_url string) bool {
 }
 
 func SendMessage(text string, chat_id int) {
-	res := cmd("sendMessage", map[string]any{
-		"text":       text,
-		"chat_id":    chat_id,
-		"parse_mode": "Markdown",
-	})
+	const maxLength = 4096
 
-	fmt.Println(res)
+	// Jika text tidak melebihi batas, kirim langsung
+	if len(text) <= maxLength {
+		res := cmd("sendMessage", map[string]any{
+			"text":       text,
+			"chat_id":    chat_id,
+			"parse_mode": "Markdown",
+		})
+		fmt.Println(res)
+		return
+	}
+
+	// Split text menjadi beberapa bagian
+	chunks := splitMessage(text, maxLength)
+
+	// Kirim setiap chunk
+	for i, chunk := range chunks {
+		res := cmd("sendMessage", map[string]any{
+			"text":       chunk,
+			"chat_id":    chat_id,
+			"parse_mode": "Markdown",
+		})
+		fmt.Printf("Message part %d/%d: %s\n", i+1, len(chunks), res)
+	}
+}
+
+func splitMessage(text string, maxLength int) []string {
+	if len(text) <= maxLength {
+		return []string{text}
+	}
+
+	var chunks []string
+	runes := []rune(text)
+
+	for len(runes) > 0 {
+		// Tentukan panjang chunk yang akan diambil
+		chunkSize := maxLength
+		if len(runes) < chunkSize {
+			chunkSize = len(runes)
+		}
+
+		// Cari posisi pemisah yang baik (newline atau space) jika memungkinkan
+		if len(runes) > chunkSize {
+			// Cari newline terdekat dari belakang
+			breakPoint := chunkSize
+			for i := chunkSize - 1; i >= chunkSize-200 && i >= 0; i-- {
+				if runes[i] == '\n' {
+					breakPoint = i + 1
+					break
+				}
+			}
+
+			// Jika tidak ada newline, cari space
+			if breakPoint == chunkSize {
+				for i := chunkSize - 1; i >= chunkSize-100 && i >= 0; i-- {
+					if runes[i] == ' ' {
+						breakPoint = i + 1
+						break
+					}
+				}
+			}
+
+			chunkSize = breakPoint
+		}
+
+		// Ambil chunk dan tambahkan ke hasil
+		chunks = append(chunks, string(runes[:chunkSize]))
+		runes = runes[chunkSize:]
+	}
+
+	return chunks
 }
 
 func OnuMessageComposer(data snmp.Onu, chat_id int) {
