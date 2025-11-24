@@ -83,7 +83,6 @@ func commandHandler(c TelegramUpdate) {
 
 	case "/list":
 		res := snmp.GetOnuList(snmp_client)
-		fmt.Println(res)
 		if len(res.Mac) < 1 {
 			telegram.SendMessage("Data tidak ditemukan...", c.Message.Chat.Id)
 			return

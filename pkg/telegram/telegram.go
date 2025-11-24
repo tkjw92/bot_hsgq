@@ -66,26 +66,23 @@ func SendMessage(text string, chat_id int) {
 
 	// Jika text tidak melebihi batas, kirim langsung
 	if len(text) <= maxLength {
-		res := cmd("sendMessage", map[string]any{
+		cmd("sendMessage", map[string]any{
 			"text":       text,
 			"chat_id":    chat_id,
 			"parse_mode": "Markdown",
 		})
-		fmt.Println(res)
-		return
 	}
 
 	// Split text menjadi beberapa bagian
 	chunks := splitMessage(text, maxLength)
 
 	// Kirim setiap chunk
-	for i, chunk := range chunks {
-		res := cmd("sendMessage", map[string]any{
+	for _, chunk := range chunks {
+		cmd("sendMessage", map[string]any{
 			"text":       chunk,
 			"chat_id":    chat_id,
 			"parse_mode": "Markdown",
 		})
-		fmt.Printf("Message part %d/%d: %s\n", i+1, len(chunks), res)
 	}
 }
 
