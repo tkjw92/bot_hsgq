@@ -1,4 +1,4 @@
-FROM tip-alpine3.22 AS builder
+FROM golang:tip-alpine3.22 AS builder
 
 RUN mkdir /src
 
