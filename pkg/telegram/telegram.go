@@ -71,6 +71,7 @@ func SendMessage(text string, chat_id int) {
 			"chat_id":    chat_id,
 			"parse_mode": "Markdown",
 		})
+		return
 	}
 
 	// Split text menjadi beberapa bagian
@@ -149,7 +150,7 @@ func OnuMessageComposer(data snmp.Onu, chat_id int) {
 	expectedLen := len(data.Name)
 	for field, length := range lengths {
 		if length != expectedLen {
-			log.Fatalf("Array length mismatch! Name=%d, Status=%d, Mac=%d, Distance=%d, Rx=%d, Tx=%d. Field '%s' has different length",
+			log.Fatalf("Array length mismatch! Name=%d, Status=%d, Mac=%d, Distance=%d, Rx=%d, Tx=%d, Vendor=%d. Field '%s' has different length",
 				lengths["Name"], lengths["Status"], lengths["Mac"],
 				lengths["Distance"], lengths["Rx"], lengths["Tx"], lengths["Vendor"], field)
 		}
