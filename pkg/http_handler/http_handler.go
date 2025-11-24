@@ -57,7 +57,7 @@ func commandHandler(c TelegramUpdate) {
 	}
 
 	snmp_client := snmp.NewSNMPClient(os.Getenv("SNMP_ADDRESS"), os.Getenv("SNMP_COMMUNITY"))
-	fmt.Printf("Received command: %v", cmd)
+	fmt.Printf("Received command: %v\n", cmd)
 	switch cmd[0] {
 	case "/start":
 		telegram.SetMenuButton(c.Message.Chat.Id)

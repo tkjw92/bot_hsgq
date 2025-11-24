@@ -62,11 +62,13 @@ func Init(webhook_url string) bool {
 }
 
 func SendMessage(text string, chat_id int) {
-	cmd("sendMessage", map[string]any{
+	res := cmd("sendMessage", map[string]any{
 		"text":       text,
 		"chat_id":    chat_id,
 		"parse_mode": "Markdown",
 	})
+
+	fmt.Println(res)
 }
 
 func OnuMessageComposer(data snmp.Onu, chat_id int) {
