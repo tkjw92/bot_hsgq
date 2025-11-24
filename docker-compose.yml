@@ -3,5 +3,5 @@ services:
     build: .
     restart: unless-stopped
     volumes:
-      ./.env:/app/.env
-      ./operators:/app/operators
+      - ./.env:/app/.env
+      - ./operators:/app/operators
