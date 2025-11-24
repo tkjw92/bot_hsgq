@@ -4,10 +4,9 @@ RUN mkdir /src
 
 WORKDIR /src
 
-COPY ./pkg /src/pkg
-COPY ./go.mod /src/go.mod
-COPY ./go.sum /src/go.mod
-COPY ./main.go /src/main.go
+COPY ./pkg .
+COPY ./go.mod ./go.sum .
+COPY ./main.go .
 
 RUN go mod download
 RUN go build -o bot_hsgq
