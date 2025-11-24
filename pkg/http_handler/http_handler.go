@@ -57,6 +57,7 @@ func commandHandler(c TelegramUpdate) {
 	}
 
 	snmp_client := snmp.NewSNMPClient(os.Getenv("SNMP_ADDRESS"), os.Getenv("SNMP_COMMUNITY"))
+	fmt.Printf("Received command: %v", cmd)
 	switch cmd[0] {
 	case "/start":
 		telegram.SetMenuButton(c.Message.Chat.Id)
@@ -94,6 +95,7 @@ func commandHandler(c TelegramUpdate) {
 		telegram.SendMessage("Perintah tidak diketahui...", c.Message.Chat.Id)
 		telegram.SendMessage(helpCmd, c.Message.Chat.Id)
 	}
+	fmt.Println("Successfull proccess command...")
 }
 
 func Webhook(w http.ResponseWriter, r *http.Request) {
