@@ -32,3 +32,7 @@ username1
 username2
 username3
 ```
+
+```
+docker compose up -d
+```
